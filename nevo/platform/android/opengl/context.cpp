@@ -57,3 +57,31 @@ nevo::platform::android::opengl::context::context(ANativeWindow* window, const c
     : window_(window), display_(), config_(choose_config(display_, conf)), surface_(create_surface(display_, config_, window, conf)), context_(create_context(display_, config_, conf))
 {
 }
+
+nevo::platform::android::opengl::context::~context()
+{
+}
+
+void nevo::platform::android::opengl::context::make_current()
+{
+}
+
+void nevo::platform::android::opengl::context::release_current()
+{
+}
+
+void nevo::platform::android::opengl::context::swap_buffers()
+{
+}
+
+std::unique_ptr<nevo::opengl::context> nevo::platform::android::opengl::context::create_shared()
+{
+}
+
+void nevo::platform::android::opengl::context::reattach_surface(ANativeWindow* native_window)
+{
+}
+
+void nevo::platform::android::opengl::context::detach_surface()
+{
+}

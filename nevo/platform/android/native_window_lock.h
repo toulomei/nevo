@@ -29,6 +29,17 @@ namespace nevo
                     ::ANativeWindow_release(window_);
                 }
 
+                void reset()
+                {
+                    ::ANativeWindow_release(window_);
+                }
+
+                void reset(ANativeWindow* window)
+                {
+                    reset();
+                    window_ = ::ANativeWindow_fromSurface(env, surface);
+                }
+
                 ANativeWindow* id() const {
                     return window_;
                 }

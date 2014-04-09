@@ -21,6 +21,9 @@ namespace nevo
                         if (id_ == EGL_NO_SURFACE)
                             throw error("eglCreateSurface");
                     }
+
+                    surface(const surface&) = delete;
+                    surface& operator=(const surface&) = delete;
                 public:
                     static surface create_window_surface(EGLDisplay display_id, EGLConfig config_id, EGLNativeWindowType window, const EGLint attrib_list[])
                     {
@@ -32,9 +35,22 @@ namespace nevo
                         return surface(display_id, ::eglCreatePbufferSurface(display_id, config_id, attrib_list));
                     }
 
+                    surface(surface&& other) : display_id_(other.display_id_), id_(other.id_)
+                    {
+                        other.id_ = 0;
+                    }
+
                     ~surface()
                     {
-                        ::eglDestroySurface(display_id_, id_);
+                        if (id_)
+                            ::eglDestroySurface(display_id_, id_);
+                    }
+
+                    surface& operator=(surface&& other)
+                    {
+                        display_id_ = other.display_id_;
+                        id_ = other.id_;
+                        other.id_ = 0;
                     }
 
                     EGLSurface id() const
@@ -46,11 +62,6 @@ namespace nevo
                     {
                         return id();
                     }
-
-                    surface(surface&&) = default;
-
-                    surface(const surface&) = delete;
-                    surface& operator=(const surface&) = delete;
                 };
             }
         }

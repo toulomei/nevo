@@ -15,15 +15,32 @@ namespace nevo
                 {
                     EGLDisplay display_id_;
                     EGLContext id_;
+
+                    context(const context&) = delete;
+                    context& operator=(const context&) = delete;
                 public:
                     context(EGLDisplay display_id, EGLConfig config_id, EGLContext shared_context, const EGLint attrib_list[]) : display_id_(display_id), id_(::eglCreateContext(display_id, config_id, shared_context, attrib_list))
                     {
                         if (id_ == EGL_NO_CONTEXT)
                             throw error("eglCreateContext");
                     }
+
+                    context(context&& other) : display_id_(other.display_id_), id_(other.id_)
+                    {
+                        other.id_ = 0;
+                    }
+
                     ~context()
                     {
-                        ::eglDestroyContext(display_id_, id_);
+                        if (id_)
+                            ::eglDestroyContext(display_id_, id_);
+                    }
+
+                    context& operator=(context&& other)
+                    {
+                        display_id_ = other.display_id_;
+                        id_ = other.id_;
+                        other.id_ = 0;
                     }
 
                     EGLContext id() const
@@ -35,11 +52,6 @@ namespace nevo
                     {
                         return id();
                     }
-
-                    context(context&&) = default;
-
-                    context(const context&) = delete;
-                    context& operator=(const context&) = delete;
                 };
             }
         }
